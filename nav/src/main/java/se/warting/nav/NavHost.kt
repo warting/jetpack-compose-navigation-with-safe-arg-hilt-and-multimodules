@@ -12,15 +12,20 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
+import se.warting.destination.Destination
+import se.warting.destination.baseuri
 
-val uri = "deeplinks://warting"
 
-// /Users/stefan/Library/Android/sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/profile"
+// /Users/stefan/Library/Android/sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/profile/1234
+// /Users/stefan/Library/Android/sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/hidden"
 
 @Composable
-fun MyNavHost() {
+fun MyNavHost(destinations: Set<Destination>) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home) {
+        destinations.forEach { destination->
+            destination.host(this)
+        }
         composable<Home> {
             HomeScreen(onNavigateToProfile = { id ->
                 navController.navigate(Profile(id))
@@ -28,18 +33,11 @@ fun MyNavHost() {
         }
         composable<Profile>(
             deepLinks = listOf(
-                navDeepLink<Profile>(basePath = "$uri/profile")
+                navDeepLink<Profile>(basePath = "$baseuri/profile")
             )
         ) { backStackEntry ->
             val profile: Profile = backStackEntry.toRoute()
             ProfileScreen(profile.id)
-        }
-        composable<Hidden>(
-            deepLinks = listOf(
-                navDeepLink<Hidden>(basePath = "$uri/hidden")
-            )
-        ) { backStackEntry ->
-            ProfileScreen("hidden page")
         }
     }
 }
@@ -51,10 +49,6 @@ object Home
 // Define a profile route that takes an ID
 @Serializable
 data class Profile(val id: String)
-
-// Define a profile route that takes an ID
-@Serializable
-object Hidden
 
 
 @Composable

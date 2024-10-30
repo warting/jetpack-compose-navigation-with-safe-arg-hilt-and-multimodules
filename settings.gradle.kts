@@ -23,3 +23,4 @@ rootProject.name = "Jetpack compose multi module hilt destinations"
 include(":app")
 include(":welcome")
 include(":nav")
+include(":destination")

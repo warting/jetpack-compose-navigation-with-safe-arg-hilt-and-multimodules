@@ -43,9 +43,13 @@ android {
 }
 
 dependencies {
-    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-android-compiler:2.52")
+    implementation(project(":welcome"))
     implementation(project(":nav"))
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation(project(":destination"))
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

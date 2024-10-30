@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose) // Add this line
     alias(libs.plugins.navigation.safeargs) // Add this line
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -52,12 +54,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling) // Add this line
     debugImplementation(libs.androidx.material3) // Add this line
 
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
     // Add Jetpack Compose Navigation dependency
     implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation(libs.kotlinx.serialization.json) // Add this line
 
     //implementation("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3") // Add this line
-
+    implementation(project(":destination")) // Add this line
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
