@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "se.warting.jetpackcomposemultimodulehiltdestinations"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "se.warting.jetpackcomposemultimodulehiltdestinations"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -29,24 +29,19 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    buildFeatures {
-        compose = true
-    }
+}
+
+kotlin {
+    jvmToolchain(jdkVersion = 21)
 }
 
 dependencies {
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-android-compiler:2.52")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
     implementation(project(":welcome"))
     implementation(project(":nav"))
     implementation(project(":destination"))
+    implementation(project(":legacy"))
 
 
     implementation(libs.androidx.core.ktx)

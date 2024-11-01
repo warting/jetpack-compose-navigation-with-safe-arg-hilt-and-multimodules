@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         google {
@@ -21,8 +23,9 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Jetpack compose multi module hilt destinations"
+rootProject.name = "jetpack_compose_multi_module_hilt_destinations"
 include(":app")
 include(":welcome")
 include(":nav")
 include(":destination")
+include(":legacy")

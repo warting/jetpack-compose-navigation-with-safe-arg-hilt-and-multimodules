@@ -15,15 +15,11 @@ import kotlinx.serialization.Serializable
 import se.warting.destination.Destination
 import se.warting.destination.baseuri
 
-
-// /Users/stefan/Library/Android/sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/profile/1234
-// /Users/stefan/Library/Android/sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/hidden"
-
 @Composable
 fun MyNavHost(destinations: Set<Destination>) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Home) {
-        destinations.forEach { destination->
+        destinations.forEach { destination ->
             destination.host(this)
         }
         composable<Home> {
