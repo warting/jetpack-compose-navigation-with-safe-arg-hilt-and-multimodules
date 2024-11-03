@@ -13,23 +13,19 @@ import androidx.navigation.navDeepLink
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoSet
 import se.warting.destination.Destination
 import se.warting.destination.baseuri
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object WelcomeModule {
-
     @Provides
     @IntoSet
-    fun provideSomeStrings(): Destination {
+    fun provideWelcomeNavigations(): Destination {
         return WelcomeDestinationImpl()
     }
-
 }
 
 @Composable

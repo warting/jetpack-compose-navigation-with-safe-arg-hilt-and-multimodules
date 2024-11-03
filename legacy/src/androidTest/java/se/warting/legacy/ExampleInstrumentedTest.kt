@@ -1,4 +1,4 @@
-package se.warting.jetpackcomposemultimodulehiltdestinations
+package se.warting.legacy
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("se.warting.jetpackcomposemultimodulehiltdestinations", appContext.packageName)
+        assertEquals("se.warting.legacy.test", appContext.packageName)
     }
 }

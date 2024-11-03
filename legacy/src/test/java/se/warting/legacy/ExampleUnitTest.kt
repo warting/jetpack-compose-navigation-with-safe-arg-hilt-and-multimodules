@@ -1,4 +1,4 @@
-package se.warting.welcome
+package se.warting.legacy
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
