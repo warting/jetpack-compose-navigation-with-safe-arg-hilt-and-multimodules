@@ -8,3 +8,5 @@
 > adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/legacy"
 
 > adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/legacy/{param1}/{param2}"
+
+> adb shell am start -a android.intent.action.VIEW -d "deeplinks://warting/sameplA"
