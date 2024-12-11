@@ -2,6 +2,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,14 +39,15 @@ fun MyNavHost(destinations: Set<Destination>) {
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(modifier = Modifier.weight(.7f)) {
+        Box(Modifier.weight(.5f)) {
             NavHostComponent(
                 navController = navController,
                 destinations = destinations
             )
         }
 
-        Box(Modifier.weight(.3f)) {
+
+        Box(Modifier.weight(.5f)) {
             BackStackLogger(navController = navController)
         }
     }
@@ -58,7 +60,7 @@ fun NavHostComponent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Home
+        startDestination = Home,
     ) {
         destinations.forEach { destination ->
             destination.host(this)
@@ -103,6 +105,25 @@ fun NavHostComponent(
             ) {
                 SampleScreen(type = SampleScreenEnum.SampleBType)
             }
+
+            composable<Home> {
+                HomeScreen(
+                    text = "I'm within the nav wrapper - London",
+                    onNavigateToProfile = { id ->
+                        navController.navigate(Profile(id))
+                    },
+                    onNavigateToSampleA = {
+                        navController.navigate(SampleA)
+                    },
+                    onNavigateToSampleB = {
+                        navController.navigate(SampleB)
+                    },
+                    onNavigateToSampleC = {
+                        navController.navigate(SampleC)
+                    },
+                )
+            }
+
             composable<SampleC>(
                 deepLinks = listOf(
                     navDeepLink<SampleC>(basePath = "$baseuri/${SampleC.DEEP_LINK}")
@@ -115,7 +136,25 @@ fun NavHostComponent(
 
             composable<Home> {
                 HomeScreen(
-                    text = "I'm within the nav wrapper",
+                    text = "I'm within the nav wrapper - Stockholm",
+                    onNavigateToProfile = { id ->
+                        navController.navigate(Profile(id))
+                    },
+                    onNavigateToSampleA = {
+                        navController.navigate(SampleA)
+                    },
+                    onNavigateToSampleB = {
+                        navController.navigate(SampleB)
+                    },
+                    onNavigateToSampleC = {
+                        navController.navigate(SampleC)
+                    },
+                )
+            }
+
+            composable<Home> {
+                HomeScreen(
+                    text = "I'm within the nav wrapper - Manchester",
                     onNavigateToProfile = { id ->
                         navController.navigate(Profile(id))
                     },
@@ -131,6 +170,24 @@ fun NavHostComponent(
                 )
             }
         }
+
+        composable<Home> {
+            HomeScreen(
+                text = "I'm within the nav wrapper - Liverpool",
+                onNavigateToProfile = { id ->
+                    navController.navigate(Profile(id))
+                },
+                onNavigateToSampleA = {
+                    navController.navigate(SampleA)
+                },
+                onNavigateToSampleB = {
+                    navController.navigate(SampleB)
+                },
+                onNavigateToSampleC = {
+                    navController.navigate(SampleC)
+                },
+            )
+        }
     }
 }
 
@@ -139,23 +196,49 @@ fun BackStackLogger(
     navController: NavController,
 ) {
     val currentBackStack by navController.currentBackStack.collectAsStateWithLifecycle()
+    val graph = navController.graph.toList()
 
-    when {
-        currentBackStack.isEmpty() -> Text(
-            "Empty back stack",
-            fontSize = 20.sp,
-        )
+    Box(Modifier.background(Color.Black.copy(alpha = .8f))) {
+        when {
+            currentBackStack.isEmpty() -> Text(
+                "Empty back stack",
+                fontSize = 20.sp,
+            )
 
-        else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(currentBackStack) {
-                Text(
-                    String.format(
-                        "%s %s",
-                        it.destination.id,
-                        it.destination.route ?: "Graph route"
-                    ),
-                    fontSize = 20.sp,
-                )
+            else -> Row(Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.weight(.5f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(currentBackStack) {
+                        Text(
+                            String.format(
+                                "%s %s",
+                                it.destination.id,
+                                it.destination.route ?: "Graph route"
+                            ),
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        )
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier.weight(.5f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(graph.toList()) {
+                        Text(
+                            String.format(
+                                "%s %s",
+                                it.id,
+                                it.route ?: "Graph route"
+                            ),
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        )
+                    }
+                }
             }
         }
     }
@@ -207,7 +290,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .background(Color.Red)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text,
@@ -233,11 +316,12 @@ fun HomeScreen(
 @Composable
 fun ProfileScreen(profile: String) {
     Scaffold { paddingValues ->
-        Box(
+        Column(
             Modifier
                 .padding(paddingValues = paddingValues)
                 .fillMaxSize()
                 .background(Color.Blue)
+                .verticalScroll(rememberScrollState()),
         ) {
             Text("profile $profile")
         }
@@ -254,7 +338,8 @@ fun SampleScreen(
             Modifier
                 .padding(paddingValues = paddingValues)
                 .fillMaxSize()
-                .background(Color.Green),
+                .background(Color.Green)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
