@@ -4,15 +4,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -26,7 +33,33 @@ import se.warting.destination.baseuri
 @Composable
 fun MyNavHost(destinations: Set<Destination>) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Home) {
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(modifier = Modifier.weight(.7f)) {
+            NavHostComponent(
+                navController = navController,
+                destinations = destinations
+            )
+        }
+
+        Box(Modifier.weight(.3f)) {
+            BackStackLogger(navController = navController)
+        }
+    }
+}
+
+@Composable
+fun NavHostComponent(
+    navController: NavHostController,
+    destinations: Set<Destination>,
+) {
+    NavHost(
+        navController = navController,
+        startDestination = Home
+    ) {
         destinations.forEach { destination ->
             destination.host(this)
         }
@@ -43,7 +76,7 @@ fun MyNavHost(destinations: Set<Destination>) {
                 },
                 onNavigateToSampleC = {
                     navController.navigate(SampleC)
-                }
+                },
             )
         }
         composable<Profile>(
@@ -61,21 +94,68 @@ fun MyNavHost(destinations: Set<Destination>) {
                     navDeepLink<SampleA>(basePath = "$baseuri/${SampleA.DEEP_LINK}")
                 )
             ) {
-                SampleScreen("Sample A")
+                SampleScreen(type = SampleScreenEnum.SampleAType)
             }
             composable<SampleB>(
                 deepLinks = listOf(
                     navDeepLink<SampleB>(basePath = "$baseuri/${SampleB.DEEP_LINK}")
                 )
             ) {
-                SampleScreen("Sample B")
+                SampleScreen(type = SampleScreenEnum.SampleBType)
             }
             composable<SampleC>(
                 deepLinks = listOf(
                     navDeepLink<SampleC>(basePath = "$baseuri/${SampleC.DEEP_LINK}")
                 )
             ) {
-                SampleScreen("Sample C")
+                SampleScreen(
+                    type = SampleScreenEnum.SampleCType,
+                    onNavigateToHome = { navController.navigate(Home) })
+            }
+
+            composable<Home> {
+                HomeScreen(
+                    text = "I'm within the nav wrapper",
+                    onNavigateToProfile = { id ->
+                        navController.navigate(Profile(id))
+                    },
+                    onNavigateToSampleA = {
+                        navController.navigate(SampleA)
+                    },
+                    onNavigateToSampleB = {
+                        navController.navigate(SampleB)
+                    },
+                    onNavigateToSampleC = {
+                        navController.navigate(SampleC)
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BackStackLogger(
+    navController: NavController,
+) {
+    val currentBackStack by navController.currentBackStack.collectAsStateWithLifecycle()
+
+    when {
+        currentBackStack.isEmpty() -> Text(
+            "Empty back stack",
+            fontSize = 20.sp,
+        )
+
+        else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            items(currentBackStack) {
+                Text(
+                    String.format(
+                        "%s %s",
+                        it.destination.id,
+                        it.destination.route ?: "Graph route"
+                    ),
+                    fontSize = 20.sp,
+                )
             }
         }
     }
@@ -114,34 +194,37 @@ data object SampleC {
 
 @Composable
 fun HomeScreen(
+    text: String = "I'm in the root",
     onNavigateToProfile: (String) -> Unit,
     onNavigateToSampleA: () -> Unit,
     onNavigateToSampleB: () -> Unit,
     onNavigateToSampleC: () -> Unit,
 ) {
     Scaffold { paddingValues ->
-        Box(
-            Modifier
+        Column(
+            modifier = Modifier
                 .padding(paddingValues = paddingValues)
                 .fillMaxSize()
                 .background(Color.Red)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(onClick = { onNavigateToProfile("123") }) {
-                    Text("Home -> profile 123")
-                }
-                Button(onClick = { onNavigateToSampleA() }) {
-                    Text("Home -> Sample A")
-                }
-                Button(onClick = { onNavigateToSampleB() }) {
-                    Text("Home -> Sample B")
-                }
-                Button(onClick = { onNavigateToSampleC() }) {
-                    Text("Home -> Sample C")
-                }
+            Text(
+                text,
+                fontSize = 20.sp,
+            )
+
+            Button(onClick = { onNavigateToProfile("123") }) {
+                Text("Home -> profile 123")
+            }
+            Button(onClick = { onNavigateToSampleA() }) {
+                Text("Home -> Sample A")
+            }
+            Button(onClick = { onNavigateToSampleB() }) {
+                Text("Home -> Sample B")
+            }
+            Button(onClick = { onNavigateToSampleC() }) {
+                Text("Home -> Sample C")
             }
         }
     }
@@ -162,15 +245,37 @@ fun ProfileScreen(profile: String) {
 }
 
 @Composable
-fun SampleScreen(text: String) {
+fun SampleScreen(
+    type: SampleScreenEnum,
+    onNavigateToHome: () -> Unit = {}
+) {
     Scaffold { paddingValues ->
-        Box(
+        Column(
             Modifier
                 .padding(paddingValues = paddingValues)
                 .fillMaxSize()
-                .background(Color.Green)
+                .background(Color.Green),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text)
+            Text(
+                text = when (type) {
+                    SampleScreenEnum.SampleAType -> "Sample A"
+                    SampleScreenEnum.SampleBType -> "Sample B"
+                    SampleScreenEnum.SampleCType -> "Sample C"
+                }
+            )
+
+            when (type) {
+                SampleScreenEnum.SampleCType -> Button(onClick = onNavigateToHome) {
+                    Text("Navigate to Home")
+                }
+
+                else -> Unit
+            }
         }
     }
+}
+
+enum class SampleScreenEnum {
+    SampleAType, SampleBType, SampleCType
 }
