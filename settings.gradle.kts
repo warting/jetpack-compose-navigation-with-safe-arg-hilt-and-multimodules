@@ -26,6 +26,7 @@ dependencyResolutionManagement {
 rootProject.name = "jetpack_compose_multi_module_hilt_destinations"
 include(":app")
 include(":welcome")
+include(":result")
 include(":nav")
 include(":destination")
 include(":legacy")

@@ -30,6 +30,7 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import se.warting.destination.Destination
 import se.warting.destination.baseuri
+import se.warting.result.NavigationResultDestination
 
 @Composable
 fun MyNavHost(destinations: Set<Destination>) {
@@ -63,7 +64,7 @@ fun NavHostComponent(
         startDestination = Home,
     ) {
         destinations.forEach { destination ->
-            destination.host(this)
+            destination.host(this, navController)
         }
         composable<Home> {
             HomeScreen(
@@ -78,6 +79,9 @@ fun NavHostComponent(
                 },
                 onNavigateToSampleC = {
                     navController.navigate(SampleC)
+                },
+                onNavigateToResult = {
+                    navController.navigate(NavigationResultDestination)
                 },
             )
         }
@@ -121,6 +125,9 @@ fun NavHostComponent(
                     onNavigateToSampleC = {
                         navController.navigate(SampleC)
                     },
+                    onNavigateToResult = {
+                        navController.navigate(NavigationResultDestination)
+                    },
                 )
             }
 
@@ -149,6 +156,9 @@ fun NavHostComponent(
                     onNavigateToSampleC = {
                         navController.navigate(SampleC)
                     },
+                    onNavigateToResult = {
+                        navController.navigate(NavigationResultDestination)
+                    },
                 )
             }
 
@@ -166,6 +176,9 @@ fun NavHostComponent(
                     },
                     onNavigateToSampleC = {
                         navController.navigate(SampleC)
+                    },
+                    onNavigateToResult = {
+                        navController.navigate(NavigationResultDestination)
                     },
                 )
             }
@@ -185,6 +198,9 @@ fun NavHostComponent(
                 },
                 onNavigateToSampleC = {
                     navController.navigate(SampleC)
+                },
+                onNavigateToResult = {
+                    navController.navigate(NavigationResultDestination)
                 },
             )
         }
@@ -282,6 +298,7 @@ fun HomeScreen(
     onNavigateToSampleA: () -> Unit,
     onNavigateToSampleB: () -> Unit,
     onNavigateToSampleC: () -> Unit,
+    onNavigateToResult: () -> Unit,
 ) {
     Scaffold { paddingValues ->
         Column(
@@ -308,6 +325,9 @@ fun HomeScreen(
             }
             Button(onClick = { onNavigateToSampleC() }) {
                 Text("Home -> Sample C")
+            }
+            Button(onClick = onNavigateToResult) {
+                Text("Home -> Result")
             }
         }
     }
