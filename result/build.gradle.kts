@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "se.warting.nav"
+    namespace = "se.warting.result"
     compileSdk = 35
 
     defaultConfig {
@@ -42,19 +42,20 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(projects.result)
+    implementation(projects.destination)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.material3)
+
+    // Add Jetpack Compose Navigation dependency
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    //implementation("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-    // Add Jetpack Compose Navigation dependency
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
-
-    //implementation("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
-    implementation(projects.destination)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

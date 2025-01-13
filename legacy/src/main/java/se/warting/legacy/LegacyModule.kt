@@ -1,6 +1,7 @@
 package se.warting.legacy
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +21,7 @@ object LegacyModule {
 
 
 class LegacyDestinationImpl : Destination {
-    override fun host(navGraphBuilder: NavGraphBuilder) {
+    override fun host(navGraphBuilder: NavGraphBuilder, navController: NavHostController) {
         navGraphBuilder.legacyNavigation()
     }
 }

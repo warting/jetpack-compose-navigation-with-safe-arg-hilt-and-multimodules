@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import dagger.Module
@@ -40,7 +41,7 @@ fun SecretScreen() {
 }
 
 class WelcomeDestinationImpl : Destination {
-    override fun host(navGraphBuilder: NavGraphBuilder) {
+    override fun host(navGraphBuilder: NavGraphBuilder, navController: NavHostController) {
         navGraphBuilder.composable<Hidden>(
             deepLinks = listOf(
                 navDeepLink<Hidden>(basePath = "$baseuri/hidden")
